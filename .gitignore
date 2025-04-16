@@ -137,6 +137,21 @@ ENV/
 env.bak/
 venv.bak/
 
+# Artifacts
+artifacts/
+*.pkl
+*.h5
+*.joblib
+
+# System files
+.DS_Store
+__pycache__/
+*.pyc
+
+# IDE files
+.vscode/
+.idea/
+
 # Spyder project settings
 .spyderproject
 .spyproject

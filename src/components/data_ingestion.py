@@ -6,7 +6,7 @@ from src.logger import logging
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from src.components.data_transformation import DataTransformation, DataTransformationConfig
-
+from components.model_trainer import ModelTrainer, ModelTrainerConfig
 
 from dataclasses import dataclass
 
@@ -43,10 +43,42 @@ class DataIngestion:
             )
         except Exception as e:
             raise CustomException(e, sys)
-        
+'''  
 if __name__ == "__main__":
     obj=DataIngestion()
     train_data, test_data = obj.initiate_data_ingestion()
 
     data_transformation = DataTransformation()
-    data_transformation.initiate_data_transformation(train_data, test_data)
+    train_arr, test_arr,_ = data_transformation.initiate_data_transformation(train_data, test_data)
+
+    model_trainer = ModelTrainer()
+    print(model_trainer.initiate_model_trainer(train_arr, test_arr))
+    # model_trainer.initiate_model_trainer(train_arr, test_arr)
+'''
+
+if __name__ == "__main__":
+    try:
+        # Initialize and execute data ingestion
+        logging.info(">>> Starting data ingestion <<<")
+        obj = DataIngestion()
+        train_data, test_data = obj.initiate_data_ingestion()
+        
+        # Initialize and execute data transformation
+        logging.info(">>> Starting data transformation <<<")
+        data_transformation = DataTransformation()
+        train_arr, test_arr, _ = data_transformation.initiate_data_transformation(train_data, test_data)
+        
+        # Initialize and execute model training
+        logging.info(">>> Starting model training <<<")
+        model_trainer = ModelTrainer()
+        results = model_trainer.initiate_model_trainer(train_arr, test_arr)
+        
+        logging.info(f">>> Training complete. Best model: {results['best_model']} <<<")
+        print(f"\nTraining Results:\n{'-'*30}")
+        print(f"Best Model: {results['best_model']}")
+        print(f"Test R2 Score: {results['metrics']['test_metrics']['r2']:.4f}")
+        print(f"Test MAE: {results['metrics']['test_metrics']['mae']:.4f}")
+        
+    except Exception as e:
+        logging.error(f">>> Pipeline failed: {str(e)} <<<")
+        raise CustomException(e, sys)
